@@ -57,6 +57,19 @@ end
 alias apt "sudo apt"
 alias aptup "sudo apt update && sudo apt upgrade"
 
+## Network Utility Functions and Aliases
+alias ping "sudo ping"
+
+function hostg
+    # Runs the host command using Google's DNS server.
+    host $argv 8.8.8.8
+end
+
+function hostm
+    # Runs the host command using Cloudflare's DNS server that filters Malware.
+    host $argv 1.1.1.2
+end
+
 ## Map clip to the Windows Clipboard
 
 if test -e /mnt/c/Windows/system32/clip.exe
