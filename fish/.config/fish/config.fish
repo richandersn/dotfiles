@@ -15,6 +15,12 @@ if test -z (pgrep ssh-agent)
 	set -Ux SSH_AGENT_PID $SSH_AGENT_PID
 end
 
+# Set DISPLAY if running on WSL2
+if uname -r | grep -i microsoft &> /dev/null
+    set -Ux DISPLAY (cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
+    set -Ux LIBGL_ALWAYS_INDIRECT 1
+end
+
 # Set variable for the OS Version
 #
 if test /etc/os-release
@@ -36,28 +42,27 @@ end
 
 # Set Aliases
 #
+
+## Directory Navigation
+
+alias .. 'cd ..'
+alias ... 'cd ../..'
+
+## Map clip to the Windows Clipboard
+
 if test -e /mnt/c/Windows/system32/clip.exe
-	alias clip=/mnt/c/Windows/system32/clip.exe
+	alias clip /mnt/c/Windows/system32/clip.exe
 end
 
-alias em "emacs -nw"
+## Use Neovim as Vim if Neovim is installed
 
 if test -e /usr/bin/nvim
     alias vim "nvim"
 end
 
+## Use exa in place of ls if exa is installed
+
 if test -e /usr/bin/exa
     alias ls "exa"
 end
 
-# Set DISPLAY if running on WSL2
-if uname -r | grep -i microsoft &> /dev/null
-    set -Ux DISPLAY (cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
-    set -Ux LIBGL_ALWAYS_INDIRECT 1
-end
-
-# Disable Python (venv) prompt
-set -Ux VIRTUAL_ENV_DISABLE_PROMPT 1
-
-# Set Color Scheme
-set -Ux theme_color_scheme gruvbox
