@@ -1,4 +1,4 @@
 function fish_right_prompt
- echo $PRETTY_NAME
+ echo $WSL_DISTRO_NAME
 end
 
