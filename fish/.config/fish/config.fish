@@ -70,6 +70,11 @@ function hostm
     host $argv 1.1.1.2
 end
 
+function mypubip
+    # Grabs the machines public IP address from icanhazip.com
+    curl icanhazip.com
+end
+
 ## Map clip to the Windows Clipboard
 
 if test -e /mnt/c/Windows/system32/clip.exe
