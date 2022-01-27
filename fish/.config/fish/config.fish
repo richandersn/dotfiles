@@ -40,13 +40,22 @@ if test -e $HOME/.emacs.d/bin
 	set PATH $PATH $HOME/.emacs.d/bin
 end
 
-# Set Aliases
+# Set Aliases and Functions
 #
 
 ## Directory Navigation
 
-alias .. 'cd ..'
-alias ... 'cd ../..'
+alias .. "cd .."
+alias ... "cd ../.."
+
+## Package Management
+function lspkg
+    # Lists the installed packages on the system.
+    dpkg -l | awk '/^[hi]i/{print $2}'
+end
+
+alias apt "sudo apt"
+alias aptup "sudo apt update && sudo apt upgrade"
 
 ## Map clip to the Windows Clipboard
 
