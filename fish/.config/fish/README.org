@@ -1,7 +1,3 @@
-#+TITLE: Fish Shell Configuration
-#+AUTHOR: Richard L. Anderson
-#+EMAIL: rich.anderson@gmail.com
-
 * Table of Contents :TOC:
 - [[#fish-shell-configuration][Fish Shell Configuration]]
 - [[#ssh-agent-and-key-management][SSH Agent and Key Management]]
