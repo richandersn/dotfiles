@@ -1,0 +1,169 @@
+:PROPERTIES:
+:ID:       cf6b24d1-c6e2-456f-b30b-73b3029bdaa2
+:END:
+#+TITLE: WSL2 Tech Share Notes
+
+* Table of Contents :TOC:
+- [[#introduction][Introduction]]
+- [[#enabling-wsl2-in-windows][Enabling WSL2 in Windows]]
+- [[#additional-software][Additional Software]]
+  - [[#windows-terminal][Windows Terminal]]
+  - [[#additional-fonts][Additional Fonts]]
+  - [[#x-windows][X Windows]]
+- [[#selecting-a-distribution][Selecting a Distribution]]
+- [[#initial-distribution-installation][Initial Distribution Installation]]
+- [[#richs-opinionated-wsl-setup][Rich's Opinionated WSL Setup]]
+  - [[#github-setup-optional][GitHub Setup (Optional)]]
+  - [[#clone-the-dotfiles-repository-from-github][Clone the dotfiles repository from GitHub]]
+  - [[#use-gnu-stow-to-install-the-configuration-files-from-dotfiles][Use GNU stow to install the configuration files from ~/dotfiles]]
+  - [[#change-the-interactive-shell-to-the-fish-shell][Change the Interactive Shell to the Fish Shell]]
+- [[#references][References]]
+
+* Introduction
+
+The Windows Subsystem for Linux (WSL) allows the use of GNU/Linux tools as an integrated part of the Windows OS. WSL was first released in 2016 as a binary translation layer that translates calls from linux programs to the Windows API. The first version of WSL had limitations did not support all linux system calls, in particular networking calls. This severely limited its utility for using security tools or running linux based services.  Microsoft reimplemented WSL in 2019 using a customized liux kernel running under the native Windows Hyper-V hypervisor. This removes the limitations on networking inherent in the first version of WSL.  WSL2 uses a virtual hard drive for the linux file system as opposed to the storing it within a folder in the Windows file system.  This seems to obviate the problems various A/V tools had with WSL1.
+
+* Enabling WSL2 in Windows
+WSL 2 requires minimum of Windows 10 2004 or Windows 11. On current versions of Windows, run the following command in either CMD.EXE or PowerShell with Administrator privileges:
+
+#+begin_src powershell
+
+wsl --install
+
+#+end_src
+
+If everything works correctly, this should enable Hyper-V, the Windows Subsystem for Linux, and Ubuntu 20.04. This method has been hit or miss for me. In my latest build, I had to enable Hyper-V and WSL manually on a clean Windows 11 Professional build.  Instructions to manually install WSL can be found at https://docs.microsoft.com/en-us/windows/wsl/install-manual.
+
+I performed the following actions in PowerShell using Adminstrator privileges:
+
+#+begin_src powershell
+
+Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+
+#+end_src
+
+* Additional Software
+To effectively use WSL, I would recommend installing some additional software on the Windows side of the house.
+
+** Windows Terminal
+A good terminal application will improve your quality of life. Windows 10 does not ship with one. Microsoft does offer an excellent terminal application, Windows Terminal, that is available from the Windows Store or GitHub (https://github.com/microsoft/terminal). I am currently using the preview version of Windows Terminal that allows for graphical configuration rather than requiring edits to a JSON file.
+
+** Additional Fonts
+I would highly recommend installing a programmer's font that has been patched to include glyphs, especially if you intend to use a "powerline" type of command prompt.  You can find a number of good fonts at https://www.nerdfonts.com/. I use FiraCode Nerd Font mono for my Terminal.
+
+** X Windows
+The latest builds of WSL2 come with wslg, a Microsoft port of the Wayland display server. It works; however, it is not fully baked. It does not use native window frames or decorations and the windows do not behave like native applications. For example, windows do not offer the tiling features available in Windows 11 or respect Windows native layout commands. I prefer using an X Windows server.  I currently use X410 (https://x410.dev/), which is a cheap commercial tool and works out of the box.  VcXsrv is a free, open source alternative, but does require some configuration work.
+
+* Selecting a Distribution
+You have three reasonable options for installing WSL distributions.  First, you can install them from the command line. To install Kali Linux from the command line, for example, open PowerShell and type:
+
+#+begin_src powershell
+
+wsl --install kali-linux
+
+#+end_src
+
+This will give you a list of free WSL distributions including Ubuntu, Debian, Kali Linux, and OpenSUSE. The second option is to install a distribution from the Microsoft Store.  The Microsoft Store includes the free distributions and a few paid options including Fedora and a variation of RHEL. If you need a distribution that is not available from Microsoft such as Arch Linux, you can get them through third parties and use the import process in WSL.
+
+I will be using Kali Linux for the remainder of this document. Kali Linux is a Debian Linux based rolling distribution that is suitable for both general work and security work.
+
+* Initial Distribution Installation
+After you have selected a distribution, you will need to provide a user name and password. This is arbitrary and does not need to be the same as your Windows credentials.  This account can be used for system administration using sudo. At this point, WSL will create the virtual hard drive and unpack the root file system.  When that is complete, you will have a ready to run Linux environment.  Once you have a working Linux environment, the first thing you should do is to update the operating system:
+
+#+begin_src bash
+
+sudo apt update
+sudo apt upgrade
+
+#+end_src
+
+The WSL distribution of Kali Linux is extremely light weight and has only 200 packages installed (the Ubuntu 20.04 WSL image comes with 627 packages installed). At this point, you will need to install any critical tools you need for operation that are not included. I installed the following packages for my initial installation:
+
+#+begin_src bash
+
+sudo apt install fish git openssh-client stow vim gnupg2 apt-transport-https
+
+#+end_src
+
+These packages are necessary for the configuration I will discuss in the next section and for the wslu utilities.  The wslu package of utilities to help integrate your WSL linux environment with the Windows host environment.  The wslu utilities can be found at https://github.com/wslutilities/wslu.  To install wslu, run the following commands:
+
+#+begin_src bash
+
+wget -O - https://pkg.wslutiliti.es/public.key | sudo tee -a /etc/apt/trusted.gpg.d/wslu.asc
+echo "deb https://pkg.wslutiliti.es/kali kali-rolling main" | sudo tee -a /etc/apt/sources.list
+sudo apt update
+sudo apt install wslu
+
+#+end_src
+
+* Rich's Opinionated WSL Setup
+Since I manage multiple Linux and Macintosh machines and I am quite opinionated regarding my working environment, I store my personal configuration files in a private GitHub repository and use GNU stow and git to manage those files in each environment.  For the purpose of this exercise, I've created a new GitHub repository with a reasonable set of configuration files.
+
+** GitHub Setup (Optional)
+GitHub requires the use of SSH for access to private repositories, so it is necessary to create SSH keys for the WSL environment. It is possible to use existing keys in the Windows environment; however, I prefer to create new keys for each of my environments. To create a new ssh key, run the following command:
+
+#+begin_src bash
+
+ssh-keygen -t rsa -b 4096
+
+#+end_src
+
+This creates a 4096 bit RSA key pair for SSH. You will be prompted for a file location and a password.  The default location for the keys is ~/.ssh. Follow the instructions at https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account to setup GitHub access for your WSL installation.  Once you have set up access on GitHub, you need to configure git. Run the following commands:
+
+#+begin_src bash
+
+git config --global user.name <username>
+git config --global user.email <email address>
+
+#+end_src
+
+** Clone the dotfiles repository from GitHub
+
+Clone the dotfiles git repository to home directory of the WSL user.
+
+#+begin_src bash
+
+cd ~
+git clone https://github.com/richandersn/dotfiles.git
+
+#+end_src
+
+This creates a directory, ~/dotfiles, that contains copies of a set of reasonable configuration files. We will next use the GNU Stow utility to link the configuration files to there appropriate locations in the home directory.
+
+** Use GNU stow to install the configuration files from ~/dotfiles
+
+GNU stow is a utility to manage symbolic links. We will be using stow to link the configuration files from the dotfiles repository to the correct location in your home directory.  The dotfiles repository contains configurations for the fish shell, the vim text editor, and a set of preinstalled and configured fonts.  To install the configuration files, run the following commands:
+
+#+begin_src bash
+
+cd ~/dotfiles
+stow fish
+stow vim
+stow fonts
+
+#+end_src
+
+Please note that your configuration files are linked back to the git repository and any changes you make to the live configuration files will be reflected in the git repository and should be managed as such. In addition, changes to the git repository pulled locally will need to be managed. This is expected and desired behavior, but it can bite you if you don't expect it to work this way.  If you want the configurations, but want to use local static copies, just copy the files/directories to the appropriate locations.
+
+** Change the Interactive Shell to the Fish Shell
+While most linux environments use the bash shell as an interactive login shell, there are newer, more functional shells available such as the fish shell (https://fishshell.com/) or zsh.  I use the fish shell and have included a configuration and set of functions in the dotfiles repository that address some annoyances with the WSL environment and provide functionality that I find useful in my day to day work. We installed the fish shell earlier. To make the fish shell your default login shell, run the following command:
+
+#+begin_src bash
+
+chsh --shell /usr/bin/fish
+
+#+end_src
+
+This will prompt you for your password and switch your default login shell in /etc/passwd to the fish shell.  This change will take effect the next time you start an interactive session.
+
+* References
+- https://docs.microsoft.com/en-us/windows/wsl/install
+- https://docs.microsoft.com/en-us/windows/wsl/install-manual
+- https://github.com/microsoft/terminalx410
+- https://www.nerdfonts.com/
+- https://sourceforge.net/projects/vcxsrv/
+- https://x410.dev/
+- https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account
+- https://fishshell.com/
