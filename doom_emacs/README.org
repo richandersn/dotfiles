@@ -1,0 +1,32 @@
+* Doom Emacs Minimal Configuration
+
+This is a minimal configuration of Doom Emacs (https://github.com/hlissner/doom-emacs). Doom Emacs is a distribution of the GNU Emacs editor that includes support for many useful packages, has a farily simple configuration framework, and includes VIM style keybindings and modal editing out of the box. This configuration includes support for org-mode files, the fish shell, and the vterm terminal emulator.
+
+** Installation
+
+1. Install the following packages.
+
+   #+begin_src fish
+
+    sudo apt install emacs ripgrep fd-find shellcheck node-marked libvterm-dev libvterm-bin cmake build-essential jq
+
+   #+end_src
+
+2. Install the Doom Emacs configuration included with the dotfiles repository.
+
+   #+begin_src fish
+
+    cd ~/dotfiles
+    stow doom_emacs
+
+   #+end_src
+
+3. Install Doom Emacs from (https://github.com/hlissner/doom-emacs). You will be prompted to answer a few questions.  Answer yes to all.
+
+   #+begin_src fish
+
+    git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
+    ~/.emacs.d/bin/doom install
+    ~/.emacs.d/bin/doom sync
+
+   #+end_src
