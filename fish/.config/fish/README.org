@@ -171,7 +171,7 @@ end
 
 ** Clipboard Integration
 
-#+begin_src
+#+begin_src fish
 
 ## Map clip to the Windows Clipboard
 
