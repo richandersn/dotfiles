@@ -1,7 +1,3 @@
-:PROPERTIES:
-:ID:       cf6b24d1-c6e2-456f-b30b-73b3029bdaa2
-:END:
-#+TITLE: WSL2 Tech Share Notes
 
 * Table of Contents :TOC:
 - [[#introduction][Introduction]]
@@ -21,7 +17,7 @@
 
 * Introduction
 
-The Windows Subsystem for Linux (WSL) allows the use of GNU/Linux tools as an integrated part of the Windows OS. WSL was first released in 2016 as a binary translation layer that translates calls from linux programs to the Windows API. The first version of WSL had limitations did not support all linux system calls, in particular networking calls. This severely limited its utility for using security tools or running linux based services.  Microsoft reimplemented WSL in 2019 using a customized liux kernel running under the native Windows Hyper-V hypervisor. This removes the limitations on networking inherent in the first version of WSL.  WSL2 uses a virtual hard drive for the linux file system as opposed to the storing it within a folder in the Windows file system.  This seems to obviate the problems various A/V tools had with WSL1.
+The Windows Subsystem for Linux (WSL) allows the use of GNU/Linux tools as an integrated part of the Windows OS. WSL was first released in 2016 as a binary translation layer that translates calls from linux programs to the Windows API. The first version of WSL had limitations did not support all linux system calls, in particular networking calls. This severely limited its utility for using security tools or running linux based services.  Microsoft reimplemented WSL in 2019 using a customized Linux kernel running under the native Windows Hyper-V hypervisor. This removes the limitations on networking inherent in the first version of WSL.  WSL2 uses a virtual hard drive for the linux file system as opposed to the storing it within a folder in the Windows file system.  This seems to obviate the problems various A/V tools had with WSL1.
 
 * Enabling WSL2 in Windows
 WSL 2 requires minimum of Windows 10 2004 or Windows 11. On current versions of Windows, run the following command in either CMD.EXE or PowerShell with Administrator privileges:
