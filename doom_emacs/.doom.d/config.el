@@ -52,3 +52,24 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+
+;; Customizations
+
+(setq confirm-kill-emacs nil)
+
+(custom-set-faces!
+    '(doom-modeline-evil-normal-state :background "green" :foreground "black" :weight bold)
+    '(doom-modeline-evil-emacs-state :background "orange" :foreground "black" :weight bold)
+    '(doom-modeline-evil-insert-state :background "red" :foreground "white" :weight bold)'
+    '(doom-modeline-evil-motion-state :background "blue" :foreground "white":weght bold)
+    '(doom-modeline-evil-visual-state :background "yellow" :foreground "black" :weight bold)
+    '(doom-modeline-evil-operator-state :background "purple" :foreground "white" :weight bold))
+
+(setq doom-modeline-modal-icon nil
+    evil-normal-state-tag   (propertize " NORMAL ")
+    evil-emacs-state-tag    (propertize " EMACS ")
+    evil-insert-state-tag   (propertize " INSERT ")
+    evil-motion-state-tag   (propertize " MOTION ")
+    evil-visual-state-tag   (propertize " VISUAL ")
+    evil-operator-state-tag (propertize " OPERATOR "))
