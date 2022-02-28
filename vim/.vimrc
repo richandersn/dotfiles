@@ -11,6 +11,9 @@ set number
 set nohlsearch
 set noerrorbells
 
+" Syntax Highlighting
+syntax on
+
 " Miscellaneous Settings
 set hidden
 set noswapfile
