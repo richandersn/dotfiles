@@ -5,9 +5,38 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-ZSH_THEME="fishy" # set by `omz`
+# Antigen - Install and Configure Plugins and Themes
 
-# .vimrc
+source $HOME/.config/zsh/antigen.zsh
+
+# Load the oh-my-zsh library
+
+antigen use oh-my-zsh
+
+# Configure Plugins
+zstyle :omz:plugins:ssh-agent lazy yes
+zstyle :omz:plugins:ssh-agent lifetime 8h
+zstyle :omz:plugins:ssh-agent quiet yes
+
+# Load bundles and plugins
+
+antigen bundle git
+antigen bundle ssh-agent
+antigen bundle command-not-found
+antigen bundle colored-man-pages
+
+antigen theme romkatv/powerlevel10k
+
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle zsh-users/zsh-history-substring-search
+antigen bundle zsh-users/zsh-completions
+
+# zsh-users/zsh-syntax-highlighting should be the last plugin loaded according to its documentation
+antigen bundle zsh-users/zsh-syntax-highlighting
+
+antigen apply
+# Antigen - End of Configuration
+
 
 # Configure ZSH Options
 autoload -U colors && colors
@@ -22,7 +51,7 @@ zmodload zsh/complist
 compinit
 _comp_options+=(globdots)
 
-# vi Mode Setup
+# VI Mode Setup
 bindkey -v
 export KEYTIMEOUT=1
 
@@ -92,38 +121,6 @@ function unlock(){
       ssh-add
     fi
 }
-
-# Antigen - Install and Configure Plugins and Themes
-
-source $HOME/.config/zsh/antigen.zsh
-
-# Load the oh-my-zsh library
-
-antigen use oh-my-zsh
-
-# Configure Plugins
-zstyle :omz:plugins:ssh-agent lazy yes
-zstyle :omz:plugins:ssh-agent lifetime 8h
-zstyle :omz:plugins:ssh-agent quiet yes
-
-# Load bundles and plugins
-
-antigen bundle git
-antigen bundle ssh-agent
-antigen bundle command-not-found
-antigen bundle colored-man-pages
-
-antigen theme romkatv/powerlevel10k
-
-antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle zsh-users/zsh-history-substring-search
-antigen bundle zsh-users/zsh-completions
-
-# zsh-users/zsh-syntax-highlighting should be the last plugin loaded according to its documentation
-antigen bundle zsh-users/zsh-syntax-highlighting
-
-antigen apply
-# Antigen - End of Configuration
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
