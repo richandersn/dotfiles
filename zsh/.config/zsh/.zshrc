@@ -122,5 +122,11 @@ function unlock(){
     fi
 }
 
+# Initialize homebrew if installed.
+if [ -e /opt/homebrew/bin/brew ]
+  then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh
